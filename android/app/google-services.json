@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "867087829860",
+    "project_id": "proyecto-todo-36e06",
+    "storage_bucket": "proyecto-todo-36e06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867087829860:android:a71232b9502aba743b8871",
+        "android_client_info": {
+          "package_name": "com.example.recordate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867087829860-ngo2b1tib7n03e07egfqumsrkih6em8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7VXT3OcPotirTID8fu75Jee_imZub40g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "867087829860-ngo2b1tib7n03e07egfqumsrkih6em8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
