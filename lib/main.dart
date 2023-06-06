@@ -1,16 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:recordate/pages/SignInPage.dart';
+import 'package:recordate/pages/SignUpPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: FirebaseOptions(
-    apiKey: 'AIzaSyC7VXT3OcPotirTID8fu75Jee_imZub40g', // Your apiKey
-    appId: '1:867087829860:android:a71232b9502aba743b8871', // Your appId
-    messagingSenderId: '867087829860', // Your messagingSenderId
-    projectId: 'proyecto-todo-36e06', // Your projectId
-  ));
+      apiKey: 'AIzaSyC7VXT3OcPotirTID8fu75Jee_imZub40g', // Your apiKey
+      appId: '1:867087829860:android:a71232b9502aba743b8871', // Your appId
+      messagingSenderId: '867087829860', // Your messagingSenderId
+      projectId: 'proyecto-todo-36e06', // Your projectId
+    ));
   runApp(MyApp());
 }
 
@@ -36,19 +38,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Firebase"),
-        ),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              signup();
-            },
-            child: Text("Signup"),
-          ),
-        ),
-      ),
+      home: SignInPage()
     );
   }
 }
