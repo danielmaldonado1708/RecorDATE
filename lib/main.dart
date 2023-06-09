@@ -7,7 +7,7 @@ import 'package:recordate/pages/SignUpPage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options: const FirebaseOptions(
       apiKey: 'AIzaSyC7VXT3OcPotirTID8fu75Jee_imZub40g', // Your apiKey
       appId: '1:867087829860:android:a71232b9502aba743b8871', // Your appId
       messagingSenderId: '867087829860', // Your messagingSenderId
@@ -37,8 +37,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SignInPage()
+    return const MaterialApp(
+      home: SignUpPage()
     );
   }
 }
