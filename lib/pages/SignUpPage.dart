@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/pages/SignInPage.dart';
 import 'package:recordate/pages/home_page.dart';
+import 'package:recordate/pages/phone_auth_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -47,7 +48,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 await authClass.googleSignIn(context);
               }),
               buttonItem(
-                  'assets/phone.svg', 'Continúa con Teléfono', 30, () {}),
+                  'assets/phone.svg', 'Continúa con Teléfono', 30, () {
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (builder) => PhoneAuthPage()));
+                  }),
               const SizedBox(
                 height: 15,
               ),
