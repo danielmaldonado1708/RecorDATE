@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/pages/home_page.dart';
 
 class AddTodoPage extends StatefulWidget {
@@ -16,6 +17,25 @@ class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
 
+  AuthClass authClass = AuthClass();
+  String currentUserId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Obtén el usuario actualmente autenticado
+    _getCurrentUserId();
+  }
+
+  Future<void> _getCurrentUserId() async {
+    final user = await authClass.getUserId();
+    print('obteniendo id de user en add todo');
+    print(user);
+    setState(() {
+      currentUserId = user as String;
+    });
+  }
+  
   String type = '';
   String category = '';
 
@@ -251,6 +271,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
       onTap: () {
         print('boton presionado');
         FirebaseFirestore.instance.collection('todo').add({
+          'userId': currentUserId,
           'title': _titleController.text,
           'description': _descriptionController.text,
           "category": category,

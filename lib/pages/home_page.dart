@@ -20,16 +20,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AuthClass authClass = AuthClass();
-  final Stream<QuerySnapshot> _stream =
-      FirebaseFirestore.instance.collection('todo').snapshots();
-
+  late String currentUserId;
+  late Stream<QuerySnapshot> _stream;
   List<Select> selected = [];
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    // Obtener el ID del usuario actualmente autenticado
+    _getCurrentUserId();
+  }
 
-    initializeDateFormatting(
-        'es');
+  Future<void> _getCurrentUserId() async {
+    final user = await authClass.getUserId();
+    setState(() {
+      currentUserId = user as String;
+      _stream = FirebaseFirestore.instance
+          .collection("todo")
+          .where("userId", isEqualTo: currentUserId)
+          .snapshots();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    initializeDateFormatting('es');
 
     DateTime now = DateTime.now();
     String formattedDate_hoy = DateFormat('E d MMM.', 'es').format(now);
@@ -149,8 +164,10 @@ class _HomePageState extends State<HomePage> {
             if (!(snapshot.data?.docs?.isNotEmpty ?? false)) {
               //la expresión no es nula y la lista de documentos está vacía
               return Center(
-                child: Text('Comienza agregando una tarea...',
-                style: TextStyle(color: Colors.white, fontSize: 20),),
+                child: Text(
+                  'Comienza agregando una tarea...',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               );
             }
 

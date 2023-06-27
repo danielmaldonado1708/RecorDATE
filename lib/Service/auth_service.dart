@@ -134,8 +134,11 @@ class AuthClass {
   }
 
   Future<String?> getUserId() async {
-    return await storage.read(key: "userId");
-  }
+    User? user = await auth.currentUser;
+
+    String userId = user?.uid ?? '';
+
+    return userId;  }
 
   Future<String?> getEmail() async {
     return await storage.read(key: "email");
