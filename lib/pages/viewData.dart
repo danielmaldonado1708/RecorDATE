@@ -201,8 +201,8 @@ class _ViewDataPageState extends State<ViewDataPage> {
                     const SizedBox(
                       height: 12,
                     ),
-                    Wrap(
-                      runSpacing: 10,
+                    Row(
+                      // runSpacing: 10,
                       children: [
                         categorySelect('Facultad', 0xffff6d6e),
                         const SizedBox(
@@ -344,6 +344,7 @@ class _ViewDataPageState extends State<ViewDataPage> {
           'description': _descriptionController.text,
           "category": category,
           'task': type,
+          "planned_date": dateTime,
         });
 
         Navigator.pop(context);

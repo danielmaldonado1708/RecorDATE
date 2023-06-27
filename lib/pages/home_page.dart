@@ -8,6 +8,8 @@ import 'package:recordate/pages/SignUpPage.dart';
 import 'package:recordate/pages/add_todo.dart';
 import 'package:recordate/pages/profilePage.dart';
 import 'package:recordate/pages/viewData.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,6 +27,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    initializeDateFormatting(
+        'es');
+
+    DateTime now = DateTime.now();
+    String formattedDate_hoy = DateFormat('E d MMM.', 'es').format(now);
+
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
@@ -50,8 +59,8 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Martes 27',
+                    Text(
+                      formattedDate_hoy,
                       style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w600,
