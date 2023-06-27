@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     if (token != null) {
       print('sesion activa');
       setState(() {
-        currentPage = const HomePage();
+        currentPage = HomePage();
       });
     } else {
       print('no hay sesion activa');
@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         home: currentPage,
       );
   }

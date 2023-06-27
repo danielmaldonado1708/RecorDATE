@@ -21,7 +21,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   AuthClass authClass = AuthClass();
   late String currentUserId;
-  late Stream<QuerySnapshot> _stream;
+  late Stream<QuerySnapshot> _stream =
+      Stream.empty(); // Inicializar con una lista vacía
   List<Select> selected = [];
 
   @override
