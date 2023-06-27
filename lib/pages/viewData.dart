@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:recordate/pages/home_page.dart';
 
 class ViewDataPage extends StatefulWidget {
-  const ViewDataPage({Key? key, required this.document, required this.id}) : super(key: key);
+  const ViewDataPage({Key? key, required this.document, required this.id})
+      : super(key: key);
   final Map<String, dynamic> document;
   final String id;
 
@@ -19,6 +20,7 @@ class _ViewDataPageState extends State<ViewDataPage> {
 
   String type = '';
   String category = '';
+  DateTime dateTime = DateTime(2023, 06, 27, 12, 30);
 
   bool edit = false;
 
@@ -42,6 +44,10 @@ class _ViewDataPageState extends State<ViewDataPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final hours = dateTime.hour.toString().padLeft(2, '0');
+    final minutes = dateTime.minute.toString().padLeft(2, '0');
+
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -72,20 +78,51 @@ class _ViewDataPageState extends State<ViewDataPage> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('todo')
-                              .doc(widget.id)
-                              .delete()
-                              .then((value) => {
-                                  Navigator.pop(context)
-                              });
-
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Marcar como completada'),
+                                content: Text(
+                                    '¿Marcar esta tarea como completada? Ya no se mostrará en la lista'),
+                                actions: [
+                                  TextButton(
+                                    child: Text('Cancelar'),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Cerrar el diálogo
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Confirmar'),
+                                    onPressed: () {
+                                      // Eliminar el registro
+                                      FirebaseFirestore.instance
+                                          .collection('todo')
+                                          .doc(widget.id)
+                                          .delete()
+                                          .then((value) {
+                                        Navigator.of(context)
+                                            .pop(); // Cerrar el diálogo
+                                        Navigator.pop(
+                                            context); // Volver a la pantalla anterior
+                                      });
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                          Icons.check,
+                          color: Colors.white,
                           size: 28,
-                      )),
+                        )
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
                     IconButton(
                         onPressed: () {
                           setState(() {
@@ -96,7 +133,7 @@ class _ViewDataPageState extends State<ViewDataPage> {
                           Icons.edit,
                           color: (edit) ? Colors.green : Colors.white,
                           size: 28,
-                    )),
+                        )),
                   ],
                 ),
               ]),
@@ -185,8 +222,102 @@ class _ViewDataPageState extends State<ViewDataPage> {
                     const SizedBox(
                       height: 50,
                     ),
-                    edit ?
-                    button() : Container(),
+                    label('Fecha y hora asignada'),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 56,
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black87,
+                            // gradient: const LinearGradient(colors: [
+                            // Color(0xff8a32f1),
+                            // Color(0xffad32f9),
+                            // ]),
+                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: edit ? () async {
+                                final date = await pickDate();
+                                if (date == null) return;
+                                final newDateTime = DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    dateTime.hour,
+                                    dateTime.minute);
+
+                                setState(() {
+                                  dateTime = newDateTime;
+                                });
+                              } : null,
+                              child: Text(
+                                '${dateTime.day}/${dateTime.month}/${dateTime.year}',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        ),
+                        const SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          height: 56,
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black87,
+                            // gradient: const LinearGradient(colors: [
+                            //   Color(0xff8a32f1),
+                            //   Color(0xffad32f9),
+                            // ]),
+                          ),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: edit ? () async {
+                                final time = await pickTime();
+                                if (time == null) return;
+
+                                final newDateTime = DateTime(
+                                    dateTime.year,
+                                    dateTime.month,
+                                    dateTime.day,
+                                    time.hour,
+                                    time.minute);
+
+                                setState(() {
+                                  dateTime = newDateTime;
+                                });
+                              } : null,
+                              child: Text(
+                                '${hours}:${minutes}',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    edit ? button() : Container(),
                     const SizedBox(
                       height: 30,
                     ),
@@ -278,54 +409,66 @@ class _ViewDataPageState extends State<ViewDataPage> {
     } else if (type == label) {
       mostrarChip = true;
     }
-    
+
     return InkWell(
-      onTap: edit ? () {
-        setState(() {
-          type = label;
-        });
-      } : null,
-      child: mostrarChip ? Chip(
-        backgroundColor: (type == label) ? Colors.white : Color(color),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        label: Text(
-          label,
-          style: TextStyle(
-              color: (type == label) ? Colors.black : Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        labelPadding: EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
-      ) : Container(),
+      onTap: edit
+          ? () {
+              setState(() {
+                type = label;
+              });
+            }
+          : null,
+      child: mostrarChip
+          ? Chip(
+              backgroundColor: (type == label) ? Colors.white : Color(color),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              label: Text(
+                label,
+                style: TextStyle(
+                    color: (type == label) ? Colors.black : Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+              ),
+              labelPadding: EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
+            )
+          : Container(),
     );
   }
 
   Widget categorySelect(String label, int color) {
-      bool mostrarChip = false;
+    bool mostrarChip = false;
     if (edit) {
       mostrarChip = true;
-    } else if (type == label) {
+    } else if (category == label) {
       mostrarChip = true;
     }
 
     return InkWell(
-      onTap: edit ? () {
-        setState(() {
-          category = label;
-        });
-      } : null,
-      child: mostrarChip ? Chip(
-        backgroundColor: (category == label) ? Colors.white : Color(color),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        label: Text(
-          label,
-          style: TextStyle(
-              color: (category == label) ? Colors.black : Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w600),
-        ),
-        labelPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
-      ) : Container(),
+      onTap: edit
+          ? () {
+              setState(() {
+                category = label;
+              });
+            }
+          : null,
+      child: mostrarChip
+          ? Chip(
+              backgroundColor:
+                  (category == label) ? Colors.white : Color(color),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              label: Text(
+                label,
+                style: TextStyle(
+                    color: (category == label) ? Colors.black : Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600),
+              ),
+              labelPadding:
+                  const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
+            )
+          : Container(),
     );
   }
 
@@ -374,4 +517,15 @@ class _ViewDataPageState extends State<ViewDataPage> {
           letterSpacing: 0.2),
     );
   }
+  
+  Future<DateTime?> pickDate() => showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100),
+      );
+
+  Future<TimeOfDay?> pickTime() => showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/custom/todoCard.dart';
 import 'package:recordate/pages/SignUpPage.dart';
-import 'package:recordate/pages/addTodo.dart';
+import 'package:recordate/pages/add_todo.dart';
 import 'package:recordate/pages/profilePage.dart';
 import 'package:recordate/pages/viewData.dart';
 
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           CircleAvatar(
-            backgroundImage: AssetImage('assets/dog.png'),
+            backgroundImage: AssetImage('assets/profile.png'),
           ),
           SizedBox(
             width: 25,
@@ -57,25 +57,25 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.w600,
                           color: Colors.white),
                     ),
-                    IconButton(
-                        onPressed: () {
-                          var instance =
-                              FirebaseFirestore.instance.collection('todo');
+                    // IconButton(
+                    //     onPressed: () {
+                    //       var instance =
+                    //           FirebaseFirestore.instance.collection('todo');
 
-                          for (var i = 0; i < selected.length; i++) {
-                            instance.doc(selected[i].id)
-                              .delete()
-                              .then((value) => {
-                                  // Navigator.pop(context)
-                              });
-                          }
-                          
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 28,
-                        )),
+                    //       for (var i = 0; i < selected.length; i++) {
+                    //         instance
+                    //             .doc(selected[i].id)
+                    //             .delete()
+                    //             .then((value) => {
+                    //                   // Navigator.pop(context)
+                    //                 });
+                    //       }
+                    //     },
+                    //     icon: Icon(
+                    //       Icons.delete,
+                    //       color: Colors.red,
+                    //       size: 28,
+                    //     )),
                   ],
                 ),
               ),
@@ -137,6 +137,14 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(),
               );
             }
+            if (!(snapshot.data?.docs?.isNotEmpty ?? false)) {
+              //la expresión no es nula y la lista de documentos está vacía
+              return Center(
+                child: Text('Comienza agregando una tarea...',
+                style: TextStyle(color: Colors.white, fontSize: 20),),
+              );
+            }
+
             return ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
@@ -190,7 +198,9 @@ class _HomePageState extends State<HomePage> {
                       iconBgcolor: Color(0xff2cc8d9),
                       iconColor: iconColor,
                       iconData: iconData,
-                      time: "8 AM",
+                      time: document['planned_date'] == null
+                          ? DateTime.now()
+                          : document['planned_date'],
                       index: index,
                       onChange: onChange,
                     ),

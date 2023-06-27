@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TodoCard extends StatelessWidget {
@@ -16,7 +17,7 @@ class TodoCard extends StatelessWidget {
   final String title;
   final IconData iconData;
   final Color iconColor;
-  final String time;
+  final Timestamp time;
   final bool check;
   final Color iconBgcolor;
   final Function onChange;
@@ -25,27 +26,44 @@ class TodoCard extends StatelessWidget {
 // class _TodoCardState extends State<TodoCard> {
   @override
   Widget build(BuildContext context) {
+    final timestamp = time as Timestamp;
+    final planned_date = timestamp.toDate(); // Convertir a DateTime
+
+    print('time que viene del dato');
+    print(time);
+    // final planned_date = time as DateTime;
+
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
-          Theme(
-            child: Transform.scale(
-              scale: 1.5,
-              child: Checkbox(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  activeColor: Color(0xff6cf8a9),
-                  checkColor: Color(0xff0e3e26),
-                  value: check,
-                  onChanged: (bool? value) {
-                    onChange(index);
-                  }),
-            ),
-            data: ThemeData(
-                primarySwatch: Colors.blue,
-                unselectedWidgetColor: Color(0xff5e616a)),
-          ),
+          // Theme(
+          //   data: ThemeData(
+          //       primarySwatch: Colors.blue,
+          //       unselectedWidgetColor: Color(0xff5e616a)
+          //   ),
+          //   child: Transform.scale(
+          //     scale: 1.5,
+          //     child: Checkbox(
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(5),
+          //           side: BorderSide(
+          //             color: (check) ? Color(0xff6cf8a9) : Colors.grey,
+          //             width: (check)
+          //                 ? 2.0
+          //                 : 1.0, // Ancho del borde ajustado cuando está seleccionado
+          //           ),
+          //         ),
+          //         activeColor: Colors.transparent,
+          //         checkColor: Colors.transparent,
+          //         value: check,
+          //         onChanged: (bool? value) {
+          //           onChange(index);
+          //         },
+          //       )
+          //   ),
+            
+          // ),
           Expanded(
             child: Container(
               height: 75,
@@ -56,10 +74,10 @@ class TodoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 15,
+                      width: 30,
                     ),
                     Container(
-                      height: 33,
+                      height: 40,
                       width: 36,
                       decoration: BoxDecoration(
                         color: iconBgcolor,
@@ -74,21 +92,28 @@ class TodoCard extends StatelessWidget {
                       width: 20,
                     ),
                     Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                            fontSize: 18,
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                              height:
+                                  8), // Espacio entre el título y la fecha/hora
+                          Text(
+                            '${planned_date.day.toString()}/${planned_date.month.toString()}/${planned_date.year.toString()} ${planned_date.hour.toString()}:${planned_date.minute.toString()}',
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.white),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      time,
-                      style: TextStyle(fontSize: 15, color: Colors.white),
-                    ),
-                    SizedBox(
-                      width: 20,
                     ),
                   ],
                 ),

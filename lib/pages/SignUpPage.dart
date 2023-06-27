@@ -47,11 +47,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   () async {
                 await authClass.googleSignIn(context);
               }),
-              buttonItem(
-                  'assets/phone.svg', 'Continúa con Teléfono', 30, () {
-                    Navigator.push(context,
-                    MaterialPageRoute(builder: (builder) => PhoneAuthPage()));
-                  }),
+              // buttonItem(
+              //     'assets/phone.svg', 'Continúa con Teléfono', 30, () {
+              //       Navigator.push(context,
+              //       MaterialPageRoute(builder: (builder) => PhoneAuthPage()));
+              //     }),
               const SizedBox(
                 height: 15,
               ),

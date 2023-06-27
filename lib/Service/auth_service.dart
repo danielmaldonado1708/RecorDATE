@@ -40,8 +40,8 @@ class AuthClass {
               context,
               MaterialPageRoute(builder: (builder) => const HomePage()),
               (route) => false);
-          final snackBar =
-              SnackBar(content: Text(userCredential.user!.displayName ?? 'Nombre desconocido...'));
+          showSnackBar(context,
+              "Bienvenido/a! ${userCredential.user!.displayName ?? 'Nombre desconocido...'}");
         } catch (e) {
           print(e);
         }
@@ -57,8 +57,8 @@ class AuthClass {
       String phoneNumber, BuildContext context, Function setData) async {
     PhoneVerificationCompleted verificationCompleted =
         (PhoneAuthCredential phoneAuthCredential) async {
-            showSnackBar(context, "Verificación completada");
-        };
+      showSnackBar(context, "Verificación completada");
+    };
 
     PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException exception) {
@@ -87,7 +87,6 @@ class AuthClass {
       showSnackBar(context, e.toString());
       print(e);
     }
-
   }
 
   Future<void> signInwithPhoneNumber(
@@ -119,10 +118,39 @@ class AuthClass {
     print('token guardado');
     await storage.write(
         key: "userCredential", value: userCredential.toString());
+    await storage.write(key: "userId", value: userCredential.user?.uid);
+
+    await storage.write(
+        key: "userName", value: userCredential.user?.displayName);
+    await storage.write(key: "email", value: userCredential.user?.email);
+    print('user id guardado');
+    print(userCredential.user?.uid);
+    print('user name guardado');
+    print(userCredential.user?.displayName);
   }
 
   Future<String?> getToken() async {
     return await storage.read(key: "token");
+  }
+
+  Future<String?> getUserId() async {
+    return await storage.read(key: "userId");
+  }
+
+  Future<String?> getEmail() async {
+    return await storage.read(key: "email");
+  }
+
+  Future<String?> getUserName() async {
+
+     User? user = await auth.currentUser;
+
+    String displayName = user?.displayName ?? '';
+    String email = user?.email ?? '';
+
+    String nameOrEmail = displayName.isNotEmpty ? displayName : email;
+
+    return nameOrEmail;
   }
 
   Future<void> logout() async {

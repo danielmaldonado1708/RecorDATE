@@ -1,3 +1,4 @@
+// import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,8 +19,14 @@ class _AddTodoPageState extends State<AddTodoPage> {
   String type = '';
   String category = '';
 
+  DateTime dateTime = DateTime(2023, 06, 27, 12, 30);
+  // DateTime dateTime = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
+    final hours = dateTime.hour.toString().padLeft(2, '0');
+    final minutes = dateTime.minute.toString().padLeft(2, '0');
+
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -28,7 +35,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
             gradient: LinearGradient(colors: [
           Color(0xff1d1e26),
           Color(0xff252041),
-        ])), // BoxDecoration
+        ])),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,6 +137,97 @@ class _AddTodoPageState extends State<AddTodoPage> {
                     const SizedBox(
                       height: 50,
                     ),
+                    label('Fecha y hora asignada'),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 56,
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black87,
+                            // gradient: const LinearGradient(colors: [
+                              // Color(0xff8a32f1),
+                              // Color(0xffad32f9),
+                            // ]),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                              onPressed: () async {
+                                final date = await pickDate();
+                                if (date == null) return;
+                                final newDateTime = DateTime(
+                                    date.year,
+                                    date.month,
+                                    date.day,
+                                    dateTime.hour,
+                                    dateTime.minute);
+                        
+                                setState(() {
+                                  dateTime = newDateTime;
+                                });
+                              },
+                              child: Text(
+                                  '${dateTime.day}/${dateTime.month}/${dateTime.year}', style: TextStyle(color: Colors.white),)
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          height: 56,
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black87,
+                            // gradient: const LinearGradient(colors: [
+                            //   Color(0xff8a32f1),
+                            //   Color(0xffad32f9),
+                            // ]),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                              onPressed: () async {
+                                final time = await pickTime();
+                                if (time == null) return;
+                        
+                                final newDateTime = DateTime(
+                                    dateTime.year,
+                                    dateTime.month,
+                                    dateTime.day,
+                                    time.hour,
+                                    time.minute);
+                        
+                                setState(() {
+                                  dateTime = newDateTime;
+                                });
+                              },
+                              child: Text('${hours}:${minutes}', style: TextStyle(color: Colors.white),)),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
                     button(),
                     const SizedBox(
                       height: 30,
@@ -156,6 +254,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
           'title': _titleController.text,
           'description': _descriptionController.text,
           "category": category,
+          "planned_date": dateTime,
           'task': type,
         });
 
@@ -302,4 +401,15 @@ class _AddTodoPageState extends State<AddTodoPage> {
           letterSpacing: 0.2),
     );
   }
+
+  Future<DateTime?> pickDate() => showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100),
+      );
+
+  Future<TimeOfDay?> pickTime() => showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/pages/SignUpPage.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:recordate/pages/home_page.dart';
@@ -12,6 +13,8 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  AuthClass authClass = AuthClass();
+
   firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
 
   TextEditingController _emailController = TextEditingController();
@@ -40,8 +43,12 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(
                 height: 20,
               ),
-              buttonItem('assets/google.svg', 'Continuar con Google', 25),
-              buttonItem('assets/phone.svg', 'Continuar con Teléfono', 30),
+              buttonItem('assets/google.svg', 'Continuar con Google', 25, () async {
+                await authClass.googleSignIn(context);
+              }),
+              // buttonItem('assets/phone.svg', 'Continuar con Teléfono', 30, () async {
+              //   await authClass.googleSignIn(context);
+              // }),
               const SizedBox(
                 height: 15,
               ),
@@ -92,13 +99,13 @@ class _SignInPageState extends State<SignInPage> {
               const SizedBox(
                 height: 20,
               ),
-              const Text(
-                'Contraseña Olvidada?',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold),
-              )
+              // const Text(
+              //   'Contraseña Olvidada?',
+              //   style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 17,
+              //       fontWeight: FontWeight.bold),
+              // )
             ],
           ),
         ),
@@ -155,32 +162,35 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  Widget buttonItem(String imagepath, String buttonname, double size) {
-    return Container(
-      width: MediaQuery.of(context).size.width - 60,
-      height: 60,
-      child: Card(
-        color: Colors.black,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-            side: BorderSide(width: 1, color: Colors.grey)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              imagepath,
-              height: size,
-              width: size,
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            Text(
-              buttonname,
-              style: const TextStyle(color: Colors.white, fontSize: 17),
-            )
-          ],
+  Widget buttonItem(String imagepath, String buttonname, double size,  void Function() onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width - 60,
+        height: 60,
+        child: Card(
+          color: Colors.black,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: BorderSide(width: 1, color: Colors.grey)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                imagepath,
+                height: size,
+                width: size,
+              ),
+              const SizedBox(
+                width: 15,
+              ),
+              Text(
+                buttonname,
+                style: const TextStyle(color: Colors.white, fontSize: 17),
+              )
+            ],
+          ),
         ),
       ),
     );
