@@ -1,9 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/custom/todoCard.dart';
 import 'package:recordate/pages/SignUpPage.dart';
 import 'package:recordate/pages/addTodo.dart';
+import 'package:recordate/pages/profilePage.dart';
 import 'package:recordate/pages/viewData.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +20,9 @@ class _HomePageState extends State<HomePage> {
   AuthClass authClass = AuthClass();
   final Stream<QuerySnapshot> _stream =
       FirebaseFirestore.instance.collection('todo').snapshots();
+
+  List<Select> selected = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +47,36 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: 22),
-                child: Text(
-                  'Martes 27',
-                  style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Martes 27',
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          var instance =
+                              FirebaseFirestore.instance.collection('todo');
+
+                          for (var i = 0; i < selected.length; i++) {
+                            instance.doc(selected[i].id)
+                              .delete()
+                              .then((value) => {
+                                  // Navigator.pop(context)
+                              });
+                          }
+                          
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 28,
+                        )),
+                  ],
                 ),
               ),
             ),
@@ -84,10 +114,18 @@ class _HomePageState extends State<HomePage> {
             ),
             label: ''),
         BottomNavigationBarItem(
-            icon: Icon(
-              Icons.settings,
-              size: 32,
-              color: Colors.white,
+            icon: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (builder) => Profile()),
+                );
+              },
+              child: Icon(
+                Icons.settings,
+                size: 32,
+                color: Colors.white,
+              ),
             ),
             label: ''),
       ]),
@@ -129,32 +167,43 @@ class _HomePageState extends State<HomePage> {
                       iconData = Icons.radio_button_unchecked;
                       iconColor = Colors.white;
                   }
+
+                  selected.add(Select(
+                      id: snapshot.data?.docs[index].id ?? '',
+                      checkValue: false));
+
                   return InkWell(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (builder) => ViewDataPage(
-                              document: document,
-                              id: snapshot.data?.docs[index].id ?? '',
-                            )
-                          )
-                      );
+                              builder: (builder) => ViewDataPage(
+                                    document: document,
+                                    id: snapshot.data?.docs[index].id ?? '',
+                                  )));
                     },
                     child: TodoCard(
                       title: document['title'] == null
                           ? 'Sin título'
                           : document['title'],
-                      check: true,
+                      check: selected[index].checkValue,
                       iconBgcolor: Color(0xff2cc8d9),
                       iconColor: iconColor,
                       iconData: iconData,
                       time: "8 AM",
+                      index: index,
+                      onChange: onChange,
                     ),
                   );
                 });
           }),
     );
+  }
+
+  void onChange(int index) {
+    setState(() {
+      selected[index].checkValue = !selected[index].checkValue;
+    });
   }
 }
 
@@ -171,3 +220,9 @@ class _HomePageState extends State<HomePage> {
 //     },
 //     icon: const Icon(Icons.logout)
 // )
+
+class Select {
+  String id;
+  bool checkValue = false;
+  Select({required this.id, required this.checkValue});
+}

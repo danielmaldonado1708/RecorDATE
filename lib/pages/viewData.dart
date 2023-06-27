@@ -85,7 +85,7 @@ class _ViewDataPageState extends State<ViewDataPage> {
                           Icons.delete,
                           color: Colors.red,
                           size: 28,
-                        )),
+                      )),
                     IconButton(
                         onPressed: () {
                           setState(() {
@@ -272,13 +272,20 @@ class _ViewDataPageState extends State<ViewDataPage> {
   }
 
   Widget taskSelect(String label, int color) {
+    bool mostrarChip = false;
+    if (edit) {
+      mostrarChip = true;
+    } else if (type == label) {
+      mostrarChip = true;
+    }
+    
     return InkWell(
       onTap: edit ? () {
         setState(() {
           type = label;
         });
       } : null,
-      child: Chip(
+      child: mostrarChip ? Chip(
         backgroundColor: (type == label) ? Colors.white : Color(color),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         label: Text(
@@ -289,18 +296,25 @@ class _ViewDataPageState extends State<ViewDataPage> {
               fontWeight: FontWeight.w600),
         ),
         labelPadding: EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
-      ),
+      ) : Container(),
     );
   }
 
   Widget categorySelect(String label, int color) {
+      bool mostrarChip = false;
+    if (edit) {
+      mostrarChip = true;
+    } else if (type == label) {
+      mostrarChip = true;
+    }
+
     return InkWell(
       onTap: edit ? () {
         setState(() {
           category = label;
         });
       } : null,
-      child: Chip(
+      child: mostrarChip ? Chip(
         backgroundColor: (category == label) ? Colors.white : Color(color),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         label: Text(
@@ -311,7 +325,7 @@ class _ViewDataPageState extends State<ViewDataPage> {
               fontWeight: FontWeight.w600),
         ),
         labelPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
-      ),
+      ) : Container(),
     );
   }
 
