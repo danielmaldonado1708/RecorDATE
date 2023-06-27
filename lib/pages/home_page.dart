@@ -4,6 +4,7 @@ import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/custom/todoCard.dart';
 import 'package:recordate/pages/SignUpPage.dart';
 import 'package:recordate/pages/addTodo.dart';
+import 'package:recordate/pages/viewData.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -126,17 +127,30 @@ class _HomePageState extends State<HomePage> {
                       break;
                     default:
                       iconData = Icons.radio_button_unchecked;
-                      iconColor = Colors.grey;
+                      iconColor = Colors.white;
                   }
-                  return TodoCard(
-                    title: document['title'] == null
-                        ? 'Sin título'
-                        : document['title'],
-                    check: true,
-                    iconBgcolor: Color(0xff2cc8d9),
-                    iconColor: iconColor,
-                    iconData: iconData,
-                    time: "8 AM",
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (builder) => ViewDataPage(
+                              document: document,
+                              id: snapshot.data?.docs[index].id ?? '',
+                            )
+                          )
+                      );
+                    },
+                    child: TodoCard(
+                      title: document['title'] == null
+                          ? 'Sin título'
+                          : document['title'],
+                      check: true,
+                      iconBgcolor: Color(0xff2cc8d9),
+                      iconColor: iconColor,
+                      iconData: iconData,
+                      time: "8 AM",
+                    ),
                   );
                 });
           }),
