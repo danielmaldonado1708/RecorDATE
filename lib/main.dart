@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:recordate/Service/auth_service.dart';
 import 'package:recordate/pages/SignInPage.dart';
 import 'package:recordate/pages/SignUpPage.dart';
+import 'package:recordate/pages/addTodo.dart';
 import 'package:recordate/pages/home_page.dart';
 // import 'package:recordate/pages/SignUpPage.dart';
 
@@ -50,6 +51,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: currentPage);
+    return MaterialApp(
+        home: HomePage(),
+      );
   }
 }
