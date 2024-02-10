@@ -269,7 +269,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
   Widget button() {
     return InkWell(
       onTap: () {
-        print('boton presionado');
+        // print('boton presionado');
         FirebaseFirestore.instance.collection('todo').add({
           'userId': currentUserId,
           'title': _titleController.text,

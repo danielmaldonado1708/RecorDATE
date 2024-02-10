@@ -43,7 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(
                 height: 20,
               ),
-              buttonItem('assets/google.svg', 'Continúa con Google', 25,
+              buttonItem('assets/google.svg', 'Continuar con Google', 25,
                   () async {
                 await authClass.googleSignIn(context);
               }),
@@ -66,7 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
               const SizedBox(
                 height: 15,
               ),
-              textItem('Contraseña', _pwdController, true),
+              textItem('Nueva Contraseña', _pwdController, true),
               const SizedBox(
                 height: 30,
               ),
